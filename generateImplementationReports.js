@@ -14,9 +14,14 @@ const request = require('request');
     const testCasesJsonUrl = "https://act-rules.github.io/testcases.json";
     const testCasesJsonOptions = { json: true };
 
+    function removeRuleId(data) {
+        return Object.values(data)[0];
+    }
+
     function writeJSONFile(file, data) {
+        const cleanData = removeRuleId(data);
         return new Promise((resolve, reject) => {
-            fs.writeFile(file, JSON.stringify(data, null, 2), (err) => {
+            fs.writeFile(file, JSON.stringify(cleanData, null, 2), (err) => {
                 if (err) {
                     console.log("Cannot write file ", file);
                     reject(err);
