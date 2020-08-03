@@ -1,6 +1,6 @@
 'use strict';
 
-const { start, close, evaluate, generateEarlReport } = require('@qualweb/core');
+const { start, stop, evaluate, generateEarlReport } = require('@qualweb/core');
 const fs = require('fs');
 const request = require('request');
 
@@ -140,5 +140,5 @@ const request = require('request');
         }
 
     }
-    await close();
+    await stop();
 })();
