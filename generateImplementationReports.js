@@ -69,9 +69,13 @@ const request = require('request');
         //const rule = "['" + ruleId + "']";
         const options = {
             "urls": urls,
+            "execute": {
+                act: true
+            },
             "act-rules": {
                 "rules": [ruleId]
-            }
+            },
+            maxParallelEvaluations: urls.length
         };
         return options;
     }

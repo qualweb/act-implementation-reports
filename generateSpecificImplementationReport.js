@@ -59,9 +59,13 @@ const request = require('request');
         //const rule = "['" + ruleId + "']";
         const options = {
             "urls": urls,
+            "execute": {
+                act: true
+            },
             "act-rules": {
                 "rules": [ruleId]
-            }
+            },
+            maxParallelEvaluations: urls.length
         };
         return options;
     }
@@ -93,8 +97,8 @@ const request = require('request');
         }
         if (assertions > 0) {
             return true;
-        } else 
-        return false;
+        } else
+            return false;
     }
 
     // start
