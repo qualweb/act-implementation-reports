@@ -1,10 +1,12 @@
 'use strict';
 
-const { start, stop, evaluate, generateEarlReport } = require('@qualweb/core');
+const { QualWeb, generateEarlReport } = require('@qualweb/core');
 const fs = require('fs');
 const request = require('request');
 
 (async () => {
+
+    const qualweb = new QualWeb();
 
     // qualweb core option
     const launchOptions = {
@@ -120,7 +122,7 @@ const request = require('request');
         return;
     }
 
-    await start(launchOptions);
+    await qualweb.start(launchOptions);
 
     const ruleIds = getRuleIds(testCases);
     const totalRules = ruleIds.length;
@@ -131,11 +133,11 @@ const request = require('request');
 
         const testUrls = getTestUrls(ruleId, testCases);
         const evaluationOptions = buildEvaluationOptions(testUrls, ruleId);
-        await evaluate(evaluationOptions);
+        let report = await qualweb.evaluate(evaluationOptions);
 
         const fileName = buildFileName(ruleId);
         const earlOptions = buildEarlOptions(ruleId);
-        const earlReports = await generateEarlReport(earlOptions);
+        const earlReports = await generateEarlReport(report, earlOptions);
 
         if (isImplemented(earlReports)) {
             await writeJSONFile(fileName, earlReports);
@@ -144,5 +146,5 @@ const request = require('request');
         }
 
     }
-    await stop();
+    await qualweb.stop();
 })();
