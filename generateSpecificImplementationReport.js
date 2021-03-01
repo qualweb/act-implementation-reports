@@ -1,10 +1,12 @@
 'use strict';
 
-const { start, stop, evaluate, generateEarlReport } = require('@qualweb/core');
+const { QualWeb, generateEarlReport } = require('@qualweb/core');
 const fs = require('fs');
 const request = require('request');
 
 (async () => {
+
+    const qualweb = new QualWeb();
 
     // qualweb core option
     const launchOptions = {
@@ -47,6 +49,7 @@ const request = require('request');
     }
 
     function getTestUrls(rule, tests) {
+        return ['https://www.ulisboa.pt/'];
         const urls = [];
         const testsForRule = tests.filter(test => test.ruleId === rule);
         for (const test of testsForRule) {
@@ -110,19 +113,19 @@ const request = require('request');
         return;
     }
 
-    await start(launchOptions);
+    await qualweb.start(launchOptions);
 
-    const ruleId = '1ec09b';
+    const ruleId = 'c6f8a9';
     console.log("Running tests for rule", ruleId);
 
     const testUrls = getTestUrls(ruleId, testCases);
 
     const evaluationOptions = buildEvaluationOptions(testUrls, ruleId);
-    await evaluate(evaluationOptions);
+    let report = await qualweb.evaluate(evaluationOptions);
 
     const fileName = buildFileName(ruleId);
     const earlOptions = buildEarlOptions(ruleId);
-    const earlReports = await generateEarlReport(earlOptions);
+    const earlReports = await generateEarlReport(report, earlOptions);
 
     if (isImplemented(earlReports)) {
         await writeJSONFile(fileName, earlReports);
@@ -130,5 +133,5 @@ const request = require('request');
         console.log("Rule", ruleId, "is not implemented");
     }
 
-    await stop();
+    await qualweb.stop();
 })();
